@@ -50,6 +50,7 @@ public class AuthController {
 		}
 	}
 
+	@PostMapping("/two-factor/otp/{otp}")
 	public ResponseEntity<AuthResponse> verifySignInOTP(@PathVariable String otp, @RequestParam String id) throws Exception {
 		TwoFactorOTP twoFactorOTP = twoFactorOTPService.findById(id);
 		if (twoFactorOTPService.verifyTwoFactorOTP(twoFactorOTP, otp)) {
