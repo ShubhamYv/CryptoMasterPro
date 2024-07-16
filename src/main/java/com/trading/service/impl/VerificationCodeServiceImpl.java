@@ -1,6 +1,7 @@
 package com.trading.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.trading.domain.VerificationType;
 import com.trading.modal.User;
@@ -9,6 +10,7 @@ import com.trading.repository.VerificationCodeRepository;
 import com.trading.service.VerificationCodeService;
 import com.trading.utils.OtpUtils;
 
+@Service
 public class VerificationCodeServiceImpl implements VerificationCodeService {
 
 	@Autowired
