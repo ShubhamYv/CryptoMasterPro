@@ -67,7 +67,9 @@ public class UserController {
 		boolean isVerified = verificationCodeService.verifyOtp(otp, verificationCode);
 
 		if (isVerified) {
-			User updatedUser = userService.enableTwoFactorAuthentication(verificationCode.getVerificationType(), sendTo,
+			User updatedUser = userService.enableTwoFactorAuthentication(
+					verificationCode.getVerificationType(), 
+					sendTo,
 					user);
 			verificationCodeService.deleteVerificationCodeById(verificationCode.getId());
 			return new ResponseEntity<User>(updatedUser, HttpStatus.OK);
