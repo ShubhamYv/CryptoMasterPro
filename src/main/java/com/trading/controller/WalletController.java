@@ -9,13 +9,16 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.trading.modal.Order;
+import com.trading.modal.PaymentOrder;
 import com.trading.modal.User;
 import com.trading.modal.Wallet;
 import com.trading.modal.WalletTransaction;
 import com.trading.service.OrderService;
+import com.trading.service.PaymentOrderService;
 import com.trading.service.UserService;
 import com.trading.service.WalletService;
 
@@ -31,6 +34,9 @@ public class WalletController {
 	
 	@Autowired
 	private OrderService orderService;
+	
+	@Autowired
+	private PaymentOrderService paymentOrderService;
 
 	@GetMapping()
 	public ResponseEntity<Wallet> getUserWallet(@RequestHeader("Authorization") String jwt) throws Exception {
@@ -54,6 +60,25 @@ public class WalletController {
 		User senderUser = userService.findUserByJwt(jwt);
 		Order order = orderService.getOrderById(orderId);
 		Wallet wallet = walletService.payOrderPayment(order, senderUser);
+		return new ResponseEntity<Wallet>(wallet, HttpStatus.ACCEPTED);
+	}
+	
+	@PutMapping("/deposite")
+	public ResponseEntity<Wallet> addBalanceToWallet(@RequestHeader("Authorization") String jwt,
+			@RequestParam(name = "order_id") Long orderId,
+			@RequestParam(name = "payment_id") String paymentId) throws Exception {
+		
+		User user = userService.findUserByJwt(jwt);
+		
+		Wallet wallet = walletService.getUserWallet(user);
+		
+		PaymentOrder order = paymentOrderService.getPaymentOrderById(orderId);
+		Boolean status = paymentOrderService.proceedPaymentOrder(order, paymentId);
+		
+		if (status) {
+			wallet = walletService.addBalance(wallet, order.getAmount());
+		}
+		
 		return new ResponseEntity<Wallet>(wallet, HttpStatus.ACCEPTED);
 	}
 }
