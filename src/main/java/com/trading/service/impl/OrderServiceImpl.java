@@ -108,29 +108,21 @@ public class OrderServiceImpl implements OrderService {
 		Asset assetToSell = assetService.findAssetByUserIdAndCoinId(user.getId(), coin.getId());
 		double buyPrice = assetToSell.getBuyPrice();
 
-		if (assetToSell != null) {
-			OrderItem orderItem = createOrderItem(coin, quantity, buyPrice, sellPrice);
-			Order createOrder = createOrder(user, orderItem, OrderType.SELL);
-			orderItem.setOrder(createOrder);
-
-			if (assetToSell.getQuantity() >= quantity) {
-				createOrder.setStatus(OrderStatus.SUCCESS);
-				createOrder.setOrderType(OrderType.SELL);
-				Order savedOrder = orderRepository.save(createOrder);
-
-				walletService.payOrderPayment(createOrder, user);
-
-				Asset updatedAsset = assetService.updateAsset(assetToSell.getId(), -quantity);
-
-				if (updatedAsset.getQuantity() * coin.getCurrentPrice() <= 1) {
-					assetService.deleteAsset(updatedAsset.getId());
-				}
-				return savedOrder;
+		OrderItem orderItem = createOrderItem(coin, quantity, buyPrice, sellPrice);
+		Order createOrder = createOrder(user, orderItem, OrderType.SELL);
+		orderItem.setOrder(createOrder);
+		if (assetToSell.getQuantity() >= quantity) {
+			createOrder.setStatus(OrderStatus.SUCCESS);
+			createOrder.setOrderType(OrderType.SELL);
+			Order savedOrder = orderRepository.save(createOrder);
+			walletService.payOrderPayment(createOrder, user);
+			Asset updatedAsset = assetService.updateAsset(assetToSell.getId(), -quantity);
+			if (updatedAsset.getQuantity() * coin.getCurrentPrice() <= 1) {
+				assetService.deleteAsset(updatedAsset.getId());
 			}
-
-			throw new Exception("Insufficient quantity to sell.");
+			return savedOrder;
 		}
-		throw new Exception("Asset not found.");
+		throw new Exception("Insufficient quantity to sell.");
 	}
 
 	@Override
