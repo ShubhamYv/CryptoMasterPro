@@ -19,6 +19,7 @@ import com.trading.service.AuthService;
 import com.trading.service.CustomUserDetailsService;
 import com.trading.service.EmailService;
 import com.trading.service.TwoFactorOTPService;
+import com.trading.service.WatchlistService;
 import com.trading.utils.OtpUtils;
 
 @Service
@@ -39,6 +40,9 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private EmailService emailService;
 
+	@Autowired
+	private WatchlistService watchlistService;
+    
     public AuthResponse register(UserRequest request) throws Exception {
         User isEmailExist = userRepository.findByEmail(request.getEmail());
         if (null != isEmailExist) {
@@ -52,6 +56,8 @@ public class AuthServiceImpl implements AuthService {
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
         User savedUser = userRepository.save(user);
+        
+        watchlistService.createWatchlist(savedUser);
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(savedUser.getEmail(),
                 savedUser.getPassword());

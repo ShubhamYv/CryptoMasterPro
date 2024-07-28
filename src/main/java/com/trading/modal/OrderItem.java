@@ -13,20 +13,20 @@ import lombok.Data;
 @Data
 public class OrderItem {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	private double quantity;
+    private double quantity;
 
-	@OneToOne
-	private Coin coin;
+    @OneToOne
+    private Coin coin;
 
-	private double buyPrice;
+    private double buyPrice;
 
-	private double sellPrice;
+    private double sellPrice;
 
-	@JsonIgnore
-	@OneToOne
-	private Order order;
+    @JsonIgnore
+    @OneToOne
+    private Order order;
 }
