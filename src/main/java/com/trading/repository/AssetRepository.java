@@ -12,5 +12,5 @@ public interface AssetRepository extends JpaRepository<Asset, Long>{
 	
 	Asset findByUserIdAndCoinId(Long userId, String coinId);
 	
-	Asset findAssetByUserIdAndId(Long userId, Long id);
+	Asset findByUserIdAndId(Long userId, Long id);
 }

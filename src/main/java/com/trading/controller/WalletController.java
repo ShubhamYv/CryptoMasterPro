@@ -1,5 +1,7 @@
 package com.trading.controller;
 
+import java.math.BigDecimal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -74,6 +76,10 @@ public class WalletController {
 		
 		PaymentOrder order = paymentOrderService.getPaymentOrderById(orderId);
 		Boolean status = paymentOrderService.proceedPaymentOrder(order, paymentId);
+		
+		if (wallet.getBalance() == null) {
+			wallet.setBalance(BigDecimal.valueOf(0));
+		}
 		
 		if (status) {
 			wallet = walletService.addBalance(wallet, order.getAmount());

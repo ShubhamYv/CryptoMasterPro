@@ -47,6 +47,6 @@ public class PaymentDetailsController {
 		
 		User user = userService.findUserByJwt(jwt);
 		PaymentDetails paymentDetails = paymentDetailsService.getUsersPaymentDetails(user);
-		return new ResponseEntity<PaymentDetails>(paymentDetails, HttpStatus.CREATED);
+		return new ResponseEntity<PaymentDetails>(paymentDetails, HttpStatus.OK);
 	}
 }
