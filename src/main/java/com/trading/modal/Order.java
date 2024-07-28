@@ -14,31 +14,35 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "orders")
+@Table(name = "orders", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"user_id", "orderType", "timestamp"})
+})
 public class Order {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@OneToOne
-	private User user;
+    @OneToOne
+    private User user;
 
-	@Column(nullable = false)
-	private OrderType orderType;
+    @Column(nullable = false)
+    private OrderType orderType;
 
-	@Column(nullable = false)
-	private BigDecimal price;
+    @Column(nullable = false)
+    private BigDecimal price;
 
-	private LocalDateTime timestamp = LocalDateTime.now();
-	
-	@Column(nullable = false)
-	private OrderStatus status;
-	
-	@OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
-	private OrderItem orderItem;
+    @Column(nullable = false)
+    private LocalDateTime timestamp = LocalDateTime.now();
+
+    @Column(nullable = false)
+    private OrderStatus status;
+
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
+    private OrderItem orderItem;
 }

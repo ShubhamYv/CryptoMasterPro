@@ -16,7 +16,7 @@ import lombok.Data;
 public class Withdrawal {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	private WithdrawalStatus withdrawalStatus;

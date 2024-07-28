@@ -34,7 +34,7 @@ public class AssetServiceImpl implements AssetService {
 
 	@Override
 	public Asset getAssetByUserIdAndId(Long userId, Long assetId) {
-		return assetRepository.findAssetByUserIdAndId(userId, assetId);
+		return assetRepository.findByUserIdAndId(userId, assetId);
 	}
 
 	@Override

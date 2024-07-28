@@ -52,18 +52,18 @@ public class CoinServiceImpl implements CoinService {
 
 	@Override
 	public String getMarketChart(String coinId, int days) throws Exception {
-		String url = coinGecko_url + "coins/" + coinId + "market_chart?vs_currency=usd&days=" + days;
-		RestTemplate restTemplate = new RestTemplate();
-		try {
-			HttpHeaders headers = new HttpHeaders();
-			HttpEntity<String> httpEntity = new HttpEntity<String>("parameters", headers);
-			ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, 
-					httpEntity, String.class);
-			return response.getBody();
-		} catch (HttpClientErrorException | HttpServerErrorException e) {
-			throw new Exception(e.getMessage());
-		}
+	    String url = coinGecko_url + "coins/" + coinId + "/market_chart?vs_currency=usd&days=" + days;
+	    RestTemplate restTemplate = new RestTemplate();
+	    try {
+	        HttpHeaders headers = new HttpHeaders();
+	        HttpEntity<String> httpEntity = new HttpEntity<>("parameters", headers);
+	        ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.GET, httpEntity, String.class);
+	        return response.getBody();
+	    } catch (HttpClientErrorException | HttpServerErrorException e) {
+	        throw new Exception("Error fetching market chart for coinId: " + coinId + ", " + e.getMessage(), e);
+	    }
 	}
+
 
 	@Override
 	public String getCoinDetails(String coinId) throws Exception {
@@ -89,19 +89,20 @@ public class CoinServiceImpl implements CoinService {
 			coin.setTotalVolume(marketData.get("total_volume").get("usd").asLong());
 			coin.setFullyDilutedValuation(marketData.get("fully_diluted_valuation").get("usd").asLong());
 			coin.setHigh24h(marketData.get("high_24h").get("usd").asDouble());
-			coin.setLow24h(marketData.get("low_24h").get("usd").asDouble());
-			coin.setPriceChange24h(marketData.get("price_change_24h").get("usd").asDouble());
-			coin.setPriceChangePercentage24h(marketData.get("price_change_percentage_24h").get("usd").asDouble());
-			coin.setMarketCapChange24h(marketData.get("market_cap_change_24h").asLong());
+			coin.setLow24h(marketData.get("low_24h").get("usd").asDouble());			
+			coin.setPriceChange24h(marketData.get("price_change_24h").asDouble());
+			coin.setPriceChangePercentage24h(marketData.get("price_change_percentage_24h").asDouble());
+			coin.setMarketCapChange24h(marketData.get("market_cap_change_24h").asLong());		
 			coin.setMarketCapChangePercentage24h(marketData.get("market_cap_change_percentage_24h").asDouble());
 			coin.setCirculatingSupply(marketData.get("circulating_supply").asDouble());
-			coin.setTotalSupply(marketData.get("total_supply").get("usd").asDouble());
+			coin.setTotalSupply(marketData.get("total_supply").asDouble());
 			coin.setAth(marketData.get("ath").get("usd").asDouble());
+			
 			coin.setAthChangePercentage(marketData.get("ath_change_percentage").get("usd").asDouble());
 			coin.setAthDate(marketData.get("ath_date").get("usd").asText());
 			coin.setAtl(marketData.get("atl").get("usd").asDouble());
 			coin.setAtlChangePercentage(marketData.get("atl_change_percentage").get("usd").asDouble());
-			coin.setMaxSupply(jsonNode.get("max_supply").asDouble());
+			coin.setMaxSupply(marketData.get("max_supply").asDouble());
 			
 			coinRepository.save(coin);
 
@@ -134,7 +135,7 @@ public class CoinServiceImpl implements CoinService {
 
 	@Override
 	public String getTop50CoinsByMarketCapRank() throws Exception {
-		String url = coinGecko_url + "coins/markets/vs_currency=usd&per_page=50&page=1";
+		String url = coinGecko_url + "coins/markets?vs_currency=usd&per_page=50&page=1";
 		RestTemplate restTemplate = new RestTemplate();
 		try {
 			HttpHeaders headers = new HttpHeaders();
@@ -148,8 +149,8 @@ public class CoinServiceImpl implements CoinService {
 	}
 
 	@Override
-	public String getTradingCoins() throws Exception {
-		String url = coinGecko_url +"search/treading";
+	public String getTrendingCoins() throws Exception {
+		String url = coinGecko_url +"search/trending";
 		RestTemplate restTemplate = new RestTemplate();
 		try {
 			HttpHeaders headers = new HttpHeaders();

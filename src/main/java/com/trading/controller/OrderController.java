@@ -35,22 +35,21 @@ public class OrderController {
 	@Autowired
 	private CoinService coinService;
 
-//	@Autowired
-//	private WalletTransactionService walletTransactionService;
-
 	@PostMapping("/pay")
 	public ResponseEntity<Order> payOrderPayment(@RequestHeader("Authorization") String jwt,
 			@RequestBody CreateOrderRequest request) throws Exception {
 
 		User user = userService.findUserByJwt(jwt);
 		Coin coin = coinService.findById(request.getCoinId());
+		System.out.println("payOrderPayment||coin:"+coin);
 		Order order = orderService.processOrder(coin, request.getQuantity(), request.getOrderType(), user);
+		System.out.println("payOrderPayment||order:"+order);
 		return ResponseEntity.ok(order);
 	}
 
-	@PostMapping("/{orderId}")
-	public ResponseEntity<Order> getOrderById(@RequestHeader("Authorization") String jwt, @PathVariable Long orderId)
-			throws Exception {
+	@GetMapping("/{orderId}")
+	public ResponseEntity<Order> getOrderById(@RequestHeader("Authorization") String jwt,
+			@PathVariable Long orderId) throws Exception {
 
 		User user = userService.findUserByJwt(jwt);
 		Order order = orderService.getOrderById(orderId);
@@ -62,7 +61,7 @@ public class OrderController {
 		}
 	}
 
-	@GetMapping("/{orderId}")
+	@GetMapping()
 	public ResponseEntity<List<Order>> getAllOrdersForUser(
 			@RequestHeader("Authorization") String jwt,
 			@RequestParam(required = false) OrderType orderType, 
@@ -70,6 +69,7 @@ public class OrderController {
 		
 		User user = userService.findUserByJwt(jwt);
 		List<Order> allOrdersOfUser = orderService.getAllOrdersOfUser(user.getId(), orderType, assetSymbol);
+		System.out.println("Hello orders");
 		return ResponseEntity.ok(allOrdersOfUser);
 	}
 

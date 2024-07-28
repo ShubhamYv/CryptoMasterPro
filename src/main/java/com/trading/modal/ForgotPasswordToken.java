@@ -14,7 +14,7 @@ import lombok.Data;
 public class ForgotPasswordToken {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private String id;
 	
 	@OneToOne

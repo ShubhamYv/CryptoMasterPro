@@ -14,11 +14,11 @@ import lombok.Data;
 public class Wallet {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
 	@OneToOne
 	private User user;
 
-	private BigDecimal balance;
+	private BigDecimal balance = BigDecimal.ZERO;
 }
